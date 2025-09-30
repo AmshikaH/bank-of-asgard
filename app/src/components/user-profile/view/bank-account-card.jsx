@@ -20,11 +20,12 @@ import PropTypes from "prop-types";
 import CloseAccountCard from "../close-account-card";
 import { formatCurrency } from "../../../util/string-util";
 import { useNavigate } from "react-router";
-import { ROUTES } from "../../../constants/app-constants";
+import { ACCOUNT_TYPES, ROUTES } from "../../../constants/app-constants";
 import { useContext } from "react";
 import { BankAccountContext } from "../../../context/bank-account-provider";
+import CloseBusinessAccountCard from "../../../components/business-user-profile/close-business-account-card";
 
-const BankAccountCard = ({ userId }) => {
+const BankAccountCard = ({ userInfo }) => {
   const initialCreditCardState = {
     cardNumber: "4574-3434-2984-2365",
     balance: -45600.67,
@@ -97,7 +98,11 @@ const BankAccountCard = ({ userId }) => {
             </li>
           </ul>
 
-          <CloseAccountCard userId={userId} />
+          {userInfo.accountType === ACCOUNT_TYPES.BUSINESS ? (
+            <CloseBusinessAccountCard userId={userInfo.userId} businessName={userInfo.businessName} />
+          ) : (
+            <CloseAccountCard userId={userInfo.userId} />
+          )}
         </div>
       </div>
     </div>
@@ -105,7 +110,7 @@ const BankAccountCard = ({ userId }) => {
 };
 
 BankAccountCard.propTypes = {
-  userId: PropTypes.string.isRequired,
+  userInfo: PropTypes.object.isRequired,
 };
 
 export default BankAccountCard;

@@ -17,7 +17,7 @@
  */
 
 import axios from "axios";
-import { agent, CLIENT_ID, CLIENT_SECRET, TOKEN_ENDPOINT } from "./config.js";
+import { agent, CLIENT_ID, CLIENT_SECRET, TOKEN_ENDPOINT } from "../config.js";
 
 // In-memory storage for token data
 let tokenData = {
@@ -31,7 +31,7 @@ let tokenData = {
 // In-memory storage for organization token data
 let orgTokenCache = {};
 
-const getAuthHeader = () => {
+export const getAuthHeader = () => {
   const authString = `${CLIENT_ID}:${CLIENT_SECRET}`;
   return "Basic " + Buffer.from(authString).toString("base64");
 };
@@ -94,7 +94,7 @@ export const getAccessToken = async () => {
 
 export const getOrganizationToken = async (switchingOrganizationId) => {
 
-  // TODO: Consdier periodic expired token cleanup
+  // TODO: Consider periodic expired token cleanup: clean token after the sign up
   const currentTime = Math.floor(Date.now() / 1000);
   if (
     orgTokenCache[switchingOrganizationId] &&
@@ -121,7 +121,7 @@ export const getOrganizationToken = async (switchingOrganizationId) => {
     params.append("switching_organization", switchingOrganizationId);
     params.append(
       "scope",
-      "internal_org_role_mgt_view internal_org_role_mgt_update internal_org_user_mgt_create internal_org_user_mgt_list internal_org_user_mgt_view"
+      "internal_org_role_mgt_view internal_org_role_mgt_update internal_org_user_mgt_create internal_org_user_mgt_list internal_org_user_mgt_view internal_oauth2_introspect"
     );
 
     const response = await axios.post(

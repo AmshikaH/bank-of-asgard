@@ -16,14 +16,14 @@
  * under the License.
  */
 
-import express from "express";
+import express, { response } from "express";
 import cors from "cors";
 import axios from "axios";
 import pino from "pino";
 
-import { getAccessToken } from "./auth.js";
-import { addUserToAdminRole, createOrganization, getAdminRoleIdInOrganization, getUserIdInOrganization, isBusinessNameAvailable } from "./business.js"
-import { agent, ASGARDEO_BASE_URL_SCIM2, GEO_API_KEY, HOST, PORT, USER_STORE_NAME, VITE_REACT_APP_CLIENT_BASE_URL } from "./config.js";
+import { getAccessToken } from "./middleware/auth.js";
+import { addUserToAdminRole, createOrganization, deleteOrganization, getAdminRoleIdInOrganization, getOrganizationId, getUserIdInOrganization, isBusinessNameAvailable } from "./controllers/business.js"
+import { agent, ASGARDEO_BASE_URL, ASGARDEO_BASE_URL_SCIM2, GEO_API_KEY, HOST, PORT, USER_STORE_NAME, VITE_REACT_APP_CLIENT_BASE_URL } from "./config.js";
 
 const corsOptions = {
   origin: [VITE_REACT_APP_CLIENT_BASE_URL],
@@ -191,25 +191,30 @@ app.post("/risk", async (req, res) => {
   }
 });
 
+async function deleteUser(userId) {
+
+  const token = await getAccessToken();
+  const response = await axios.delete(
+    `${ASGARDEO_BASE_URL_SCIM2}/Users/${userId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "*/*",
+      },
+      httpsAgent: agent, // Attach the custom agent
+    }
+  );
+  return response;
+}
+
 app.delete("/close-account", async (req, res) => {
   try {
     const userId = req.query.userId;
-    const token = await getAccessToken();
-
-    const response = await axios.delete(
-      `${ASGARDEO_BASE_URL_SCIM2}/Users/${userId}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "*/*",
-        },
-        httpsAgent: agent, // Attach the custom agent
-      }
-    );
-    if (response.status == 204) {
+    const deletionResponse = await deleteUser(userId);
+    if (deletionResponse.status == 204) {
       res.json({
         message: "Account removed successfully",
-        data: response.data,
+        data: deletionResponse.data,
       });
     }
   } catch (error) {
@@ -217,6 +222,106 @@ app.delete("/close-account", async (req, res) => {
     res
       .status(400)
       .json({ error: error.detail || "An error occurred while deleting user" });
+  }
+});
+
+app.delete("/close-business-account", async (req, res) => {
+  
+  try {
+    const userId = req.query.userId;
+    const organizationName = req.query.businessName;
+    const orgId = await getOrganizationId(organizationName);
+    const businessDeletionStatus = await deleteOrganization(orgId);
+    const deletionResponse = await deleteUser(userId);
+    if (businessDeletionStatus == 204 && deletionResponse.status == 204) {
+      res.json({
+        message: "Business account removed successfully"
+      });
+    }
+  } catch (error) {
+    console.log("Error:", error.detail || error.message);
+    res
+      .status(400)
+      .json({ error: error.detail || "An error occurred while deleting business user" });
+  }
+});
+
+app.get("/business", async (req, res) => {
+  
+  try {
+    const organizationId = req.query.organizationId;
+    const token = await getAccessToken();
+    const response = await axios.get(
+    `${ASGARDEO_BASE_URL}/api/server/v1/organizations/${organizationId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      httpsAgent: agent,
+    }
+  );
+
+  const businessRegistrationAttribute = response.data.attributes.find(attr => attr.key === "business-registration-number");
+  const businessRegNumber = businessRegistrationAttribute ? businessRegistrationAttribute.value : null;
+
+  if (response.status === 200) {
+    res.json({
+      "businessRegistrationNumber": businessRegNumber
+    });
+  }
+  } catch (error) {
+    console.log("Business API Error:", error.detail || error.message);
+    res
+      .status(400)
+      .json({ error: error.detail || "An error occurred while fetching business details" });
+  }
+});
+
+app.patch("/business-update", async (req, res) => {
+  try {
+    const organizationId = req.body.organizationId;
+    const newBusinessRegistrationNumber = req.body.businessRegistrationNumber;
+    const operation = req.body.operation
+
+    if (!organizationId || !newBusinessRegistrationNumber) {
+      return res.status(400).json({ error: "Missing organizationId or business details in request" });
+    }
+
+    const token = await getAccessToken();
+
+    const response = await axios.patch(
+      `${ASGARDEO_BASE_URL}/api/server/v1/organizations/${organizationId}`,
+      [
+        {
+          operation,
+          path: "/attributes/business-registration-numberr",
+          value: newBusinessRegistrationNumber
+        }
+      ],
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        httpsAgent: agent
+      }
+    );
+
+    if (response.status === 200) {
+      res.json({
+        message: "Business details updated successfully",
+        data: response.data
+      });
+    } else {
+      res.status(response.status).json({ error: "Failed to update business details" });
+    }
+  } catch (error) {
+    console.error("Organization PATCH API Error:", error.response?.data || error.message);
+    res.status(400).json({
+      error: error.response?.data || "An error occurred while updating the business"
+    });
   }
 });
 

@@ -16,7 +16,7 @@
  * under the License.
  */
 
-import { useAsgardeo, SignedIn, SignOutButton, SignedOut, SignInButton } from "@asgardeo/react";
+import { useAsgardeo, SignedIn, SignOutButton, SignedOut, SignInButton, useUser } from "@asgardeo/react";
 import { lazy, Suspense, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -26,7 +26,7 @@ import {
   NavLink
 } from "react-router";
 import { SnackbarProvider } from "notistack";
-import { ROUTES, SITE_SECTIONS } from "./constants/app-constants";
+import { ACCOUNT_TYPES, ROUTES, SITE_SECTIONS } from "./constants/app-constants";
 import PersonalBankingPage from "./pages/personal-banking";
 import RegisterAccountPage from "./pages/register-account";
 import UserProfilePage from "./pages/user-profile";
@@ -37,10 +37,13 @@ import "./assets/css/style.scss";
 import { BankAccountProvider } from "./context/bank-account-provider";
 import IdentityVerificationPage from "./pages/identity-verification";
 import { IdentityVerificationProvider } from "./context/identity-verification-provider";
+import { Dropdown, DropdownButton } from "react-bootstrap";
+import BusinessProfilePage from "./pages/business-profile";
 
 const App = () => {
-  const { isSignedIn, signIn, signOut } = useAsgardeo();
+  const { isSignedIn } = useAsgardeo();
   const [ siteSection, setSiteSection ] = useState("");
+  const { profile} = useUser();
 
   const TransferFundsPage = lazy(() => import("./pages/transfer-funds"));
   const TransferFundsVerifyPage = lazy(() => import("./pages/transfer-funds-verify"));
@@ -70,7 +73,7 @@ const App = () => {
               </span>
               <span>
                 <SignedIn>
-                  <SignOutButton className="login_link">Logout</SignOutButton>
+                  <SignOutButton className="logout_link">Logout</SignOutButton>
                 </SignedIn>
 
                 <SignedOut>
@@ -79,7 +82,23 @@ const App = () => {
                         Open an account
                     </span>
                   </Link>
-                  <SignInButton className="login_link">Login</SignInButton>
+                  <span className="divider">|</span>
+                  <DropdownButton
+                      id="dropdown-custom-components"
+                      title="Login"
+                      autoClose={false}
+                  >
+                      <Dropdown.Item as="div" className="dropdown-item-custom dropdown-item-custom-top">
+                          <SignInButton className="login_link" signInOptions={{ loginType: 'Personal' }}>
+                              Personal Login
+                          </SignInButton>
+                      </Dropdown.Item>
+                      <Dropdown.Item as="div" className="dropdown-item-custom">
+                          <SignInButton className="login_link" signInOptions={{ loginType: 'Business' }}>
+                              Business Login
+                          </SignInButton>
+                      </Dropdown.Item>
+                  </DropdownButton>
                 </SignedOut>
               </span>
             </div>
@@ -166,11 +185,20 @@ const App = () => {
         { isSignedIn &&
           <Route path={ ROUTES.USER_PROFILE } element={ <UserProfilePage setSiteSection={ setSiteSection } /> } />
         }
+        { isSignedIn &&
+          <Route path={ ROUTES.BUSINESS_PROFILE } element={ <BusinessProfilePage setSiteSection={ setSiteSection } /> } />
+        }
         {/* <Route path="/" element={ <Navigate to={ ROUTES.PERSONAL_BANKING } setSiteSection={ setSiteSection } /> } /> */}
         <Route path="/" element={
           isSignedIn ?
             (
-              <UserProfilePage setSiteSection={ setSiteSection } />
+              <>
+              {profile && profile["urn:scim:schemas:extension:custom:User"].accountType === ACCOUNT_TYPES.BUSINESS ? (
+                <BusinessProfilePage setSiteSection={ setSiteSection } />
+              ) : (
+                <UserProfilePage setSiteSection={ setSiteSection } />
+              )}
+             </>
             ) : (
               <PersonalBankingPage setSiteSection={ setSiteSection } />
             )

@@ -141,6 +141,22 @@ button {
 }
 
 .login_link, .login_link:hover, .login_link:focus {
+  color: $black !important;
+  background-color: $white !important;
+  outline: 1px !important;
+  border: none !important;
+  padding: 0px !important;
+  display: block;
+  border-radius: 0;
+  width: 100% !important;
+
+  &:hover {
+      background-color: $primary2 !important;
+      color: $white !important;
+  }
+}
+
+.logout_link {
   color: $white;
   background-color: $primary2;
   outline: 1px !important;
@@ -149,6 +165,38 @@ button {
   padding: 4px 20px !important;
   display: inline-block;
   border-radius: 0;
+}
+
+#dropdown-custom-components {
+  text-transform: none !important;
+  border-radius: 0;
+  padding: 4px 20px !important;
+}
+
+#dropdown-custom-components:focus,
+#dropdown-custom-components:active,
+#dropdown-custom-components:hover,
+#dropdown-custom-components.show {
+  background-color: $primary2 !important;
+  box-shadow: none !important;
+  border-color: inherit !important;
+}
+
+.dropdown-menu {
+  margin-top: 0px !important;
+  padding: 0px !important;
+  z-index: 100000 !important;
+  border-radius: 0 !important;
+  border-color: $primary2;
+}
+
+.dropdown-item-custom {
+  padding: 0px;
+}
+
+.dropdown-item-custom-top {
+  margin-bottom: 1px;
+  border-bottom: $black;
 }
 
 .login_details {
@@ -216,6 +264,10 @@ button {
       }
     }
   }
+}
+
+.tab-sub-heading {
+  font-size: 150%;
 }
 
 /*header section*/
@@ -319,7 +371,7 @@ button {
 }
 
 .custom_nav-container {
-  z-index: 99999;
+  // z-index: 99999;
   padding: 0;
   min-height: 96px;
 
@@ -815,10 +867,15 @@ a:focus {
   .contact_form-container {
     margin-top: 35px;
 
-    label {
+    label:not(.radio-label), .password-label {
       text-transform: uppercase;
     }
 
+    .radio-label {
+      margin-bottom: 0;
+    }
+
+    // input:not([type="radio"]):not([type="checkbox"]), select {
     input, select {
       border: 1px solid color.scale($black, $lightness: 80%);
       outline: none;
@@ -841,6 +898,12 @@ a:focus {
         border-color: color.scale($black, $lightness: 5%);
       }
     }
+
+    input[type="radio"], input[type="checkbox"] {
+      width: auto;     
+      height: auto;     
+    }
+
 
     .country-select {
       margin-bottom: 20px;
@@ -914,6 +977,10 @@ a:focus {
       label {
         color: $black;
       }
+    }
+
+    input[type="radio"] {
+      margin: 0 8px 0 0;
     }
   }
 
@@ -1139,6 +1206,16 @@ a:focus {
   }
 }
 
+.box-zone {
+  margin-top: 50px;
+  border: 1px solid $black;
+  padding: 30px;
+
+  h5 {
+    color: $black;
+  }
+}
+
 input[type="password"]:focus ~ .password-validation,
 input.password-field:focus ~ .password-validation {
   display: block;
@@ -1247,6 +1324,10 @@ input.password-field:focus ~ .password-validation {
       }
     }
   }
+}
+
+.manage-user-btn {
+  width: 50%;
 }
 
 /* end Dialog box */
@@ -1603,4 +1684,93 @@ ul.password-policy-indicator {
   #onfido-mount {
     width: 600px;
   }
+}
+
+.user-data {
+  p {
+      margin: 0 0;
+    }
+}
+
+.user-data-suffix {
+  display: flex;
+  align-items: "center";
+}
+
+.mfa-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; // space between the label and checkbox group
+
+  .mfa-label {
+    font-weight: bold;
+  }
+
+  .mfa-options {
+    display: flex;
+    flex-direction: column; // stack checkboxes vertically
+    gap: 8px;               // space between each checkbox
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px; // space between the checkbox and its text
+    }
+  }
+}
+
+.country {
+  border: none;
+}
+
+
+.gold-button {
+  @include hero_btn($primary2, $white, 10px, 60px);
+  text-transform: uppercase;
+  font-weight: bold;
+  outline-color: $primary2;
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 0;
+
+  &.secondary {
+    background-color: $primary1;
+    outline-color: $primary1;
+    color: $white;
+
+    &:hover {
+      background-color: transparent;
+      border-color: $primary1;
+      color: $primary1;
+    }
+  }
+}
+
+.black-button {
+  @include hero_btn($primary2, $white, 10px, 60px);
+  background-color: $primary1 !important;
+  outline-color: $primary1;
+  color: $white;
+  width: 100%;
+
+  &:hover {
+      background-color: transparent;
+      border-color: $primary1;
+      color: $primary1;
+    }
+}
+
+.gold-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: #ccc;
+  color: #666;
+}
+
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+  border-color: $primary2 !important;
+}
+
+label.Mui-focused {
+  color: $primary2 !important;
 }

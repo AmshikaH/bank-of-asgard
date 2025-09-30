@@ -17,8 +17,10 @@
  */
 
 import axios from "axios";
-import { getAccessToken, getOrganizationToken } from "./auth.js";
-import { agent, ASGARDEO_BASE_URL } from "./config.js";
+import { getAccessToken, getOrganizationToken } from "../middleware/auth.js";
+import { agent, ASGARDEO_BASE_URL } from "../config.js";
+
+// TODO: Format into folders
 
 export async function isBusinessNameAvailable(businessName) {
 
@@ -74,8 +76,8 @@ export async function getUserIdInOrganization(organizationId, username) {
         Accept: "application/json",
       },
       params: {
-          filter: `userName eq ${username}`,
-        },
+        filter: `userName eq ${username}`,
+      },
       httpsAgent: agent,
     }
   );
@@ -99,8 +101,8 @@ export async function getAdminRoleIdInOrganization(organizationId) {
         Accept: "application/json",
       },
       params: {
-          filter: `displayName eq Business Administrator`,
-        },
+        filter: `displayName eq Business Administrator`,
+      },
       httpsAgent: agent,
     }
   );
@@ -138,4 +140,45 @@ export async function addUserToAdminRole(organizationId, roleId, userId) {
     }
   );
   return response.data;
+}
+
+export async function getOrganizationId(organizationName) {
+  
+  const token = await getAccessToken();
+  const response = await axios.get(
+    `${ASGARDEO_BASE_URL}/api/server/v1/organizations`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      params: {
+        filter: `name eq ${organizationName}`,
+      },
+      httpsAgent: agent, // Attach the custom agents
+    }
+  );
+  const organizations = response.data.organizations || [];
+  if (organizations.length === 0) {
+    throw new Error("Business not found.");
+  }
+  return organizations[0].id;
+}
+
+export async function deleteOrganization(organizationId) {
+  
+  const token = await getAccessToken();
+  const response = await axios.delete(
+    `${ASGARDEO_BASE_URL}/api/server/v1/organizations/${organizationId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      httpsAgent: agent, // Attach the custom agents
+    }
+  );
+  return response.status;
 }

@@ -20,6 +20,7 @@ interface Window {
     APP_BASE_URL: string;
     ASGARDEO_BASE_URL: string;
     APP_CLIENT_ID: string;
+    APP_NAME: string;
     DISABLED_FEATURES: string[];
     TRANSFER_THRESHOLD: number;
     IDENTITY_VERIFICATION_PROVIDER_ID: string;

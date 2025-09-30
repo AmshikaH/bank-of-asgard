@@ -20,6 +20,7 @@ import PropTypes from "prop-types";
 import AccountSecurityCard from "./account-security-card";
 import UserProfileCard from "./view/user-profile-card";
 import BankAccountCard from "./view/bank-account-card";
+import BusinessProfileCard from "../../components/business-user-profile/business-profile-card";
 
 const ViewProfile = ({ userInfo, setShowEditForm }) => {
   return (
@@ -32,7 +33,7 @@ const ViewProfile = ({ userInfo, setShowEditForm }) => {
 
       <div className="row" style={{ marginTop: "25px" }}>
         <div className="col-md-7">
-          <BankAccountCard userId={userInfo.userId} />
+          <BankAccountCard userInfo={userInfo} />
         </div>
         <div
           className="col-md-5"

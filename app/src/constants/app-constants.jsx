@@ -21,6 +21,7 @@ export const ROUTES = {
   PERSONAL_BANKING: "/personal-banking",
   BUSINESS_BANKING: "/business-banking",
   USER_PROFILE: "/user-profile",
+  BUSINESS_PROFILE: "/business-profile",
   REGISTER_ACCOUNT: "/register-account",
   FUND_TRANSFER: "/fund-transfer",
   FUND_TRANSFER_VERIFY: "/fund-transfer/verify",
@@ -35,7 +36,8 @@ export const SITE_SECTIONS = {
 
 export const ACCOUNT_TYPES = {
     PERSONAL: "Personal",
-    BUSINESS: "Business"
+    BUSINESS: "Business",
+    BUSINESS_MEMBER: "BusinessMember"
 }
 
 export const URL_QUERY_PARAMS = {
