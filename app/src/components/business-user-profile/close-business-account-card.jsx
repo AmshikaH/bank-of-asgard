@@ -24,7 +24,7 @@ import Modal from "../common/modal";
 import { closeBusinessAccount } from "../../api/profile";
 
 const CloseBusinessAccountCard = ({ businessName }) => {
-  const { signOut } = useAsgardeo();
+  const { signOut, getAccessToken } = useAsgardeo();
   const { enqueueSnackbar } = useSnackbar();
 
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
@@ -33,7 +33,8 @@ const CloseBusinessAccountCard = ({ businessName }) => {
   const handleAccountClose = async () => {
     try {
       setIsConfirmationOpen(false);
-      const response = await closeBusinessAccount(businessName);
+      const token = await getAccessToken();
+      const response = await closeBusinessAccount(businessName, token);
 
       if (response.status == 200) {
         setIsSuccessModalOpen(true);

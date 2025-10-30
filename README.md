@@ -19,6 +19,24 @@
   * `Username and Password`, `Passkey` - Second Step
   * `Totp` and `Email OTP` - Third Step
 7. Configure the conditional authentication script (Replace the `<NODE_SERVER_BASE_PATH>` with server URL) with the one found at conditional-auth-script.js.
+8. Enable API authorization access for the following API resources:
+  - Organization APIs:
+    - Application Management API
+      ```
+      internal_org_application_mgt_update internal_org_application_mgt_delete internal_org_application_mgt_create internal_org_application_mgt_view
+      ```
+    - Identity Provider Management API
+      ```
+      internal_org_idp_view internal_org_idp_delete internal_org_idp_update internal_org_idp_create
+      ```
+    - SCIM2 Users API with the scopes:
+      ```
+      internal_org_user_mgt_update internal_org_user_mgt_delete internal_org_user_mgt_list internal_org_user_mgt_create 
+      ```
+    - SCIM2 Roles API with the scopes:
+      ```
+      internal_org_user_mgt_view internal_org_role_mgt_delete internal_org_role_mgt_create internal_org_role_mgt_update internal_org_role_mgt_view
+      ```
 8. Create a standard web application.
 9. Navigate to the "Shared Access" tab and share the application with all organizations.
 10. Enable the following grant types:
@@ -37,10 +55,6 @@ redirect url: `https://localhost:5003`, allowed origin: `https://localhost:5003 
       ```
       internal_organization_create internal_organization_view internal_organization_update internal_organization_delete
       ```
-    - OAuth2 Introspection API
-      ```
-      internal_oauth2_introspect
-      ```
   - Organization APIs:
     - SCIM2 Users API with the scopes:
       ```
@@ -51,7 +65,7 @@ redirect url: `https://localhost:5003`, allowed origin: `https://localhost:5003 
       internal_org_user_mgt_view internal_org_role_mgt_delete internal_org_role_mgt_create internal_org_role_mgt_update internal_org_role_mgt_view
       ```
 
-13. Navigate to the Roles tab and create an application role named `Business Administrator` with the permissions for the SCIM2 Users and SCIM2 Roles organization APIs. Also, create roles `Manager`, `Auditor` and `Member`.
+13. Navigate to the User Management -> Roles tab and create an organization role named `Business Administrator` with the permissions for the SCIM2 Users and SCIM2 Roles organization APIs. Also, create organization roles `Manager`, `Auditor` and `Member`.
 14. Navigate to Connections -> Passkey Setup -> Add the Trusted Origins: `http://localhost:5173` and enable `Allow Passkey usernameless authentication` option.
 
 15. Configure [Onfido identity verification](https://wso2.com/asgardeo/docs/guides/identity-verification/add-identity-verification-with-onfido/) for your organization.

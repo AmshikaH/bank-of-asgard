@@ -121,7 +121,7 @@ export const getOrganizationToken = async (switchingOrganizationId) => {
     params.append("switching_organization", switchingOrganizationId);
     params.append(
       "scope",
-      "internal_org_role_mgt_view internal_org_role_mgt_update internal_org_user_mgt_create internal_org_user_mgt_list internal_org_user_mgt_view internal_oauth2_introspect"
+      "internal_org_role_mgt_view internal_org_role_mgt_update internal_org_user_mgt_create internal_org_user_mgt_list internal_org_user_mgt_view"
     );
 
     const response = await axios.post(

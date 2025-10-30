@@ -14,10 +14,11 @@ const ContextSwitch = ({ organizationId, children, fallback = null, scopes = "op
   const [ expiresIn, setExpiresIn ] = useState(null);
 
   useEffect(() => {
+    if (!isSignedIn || !organizationId) return;
       if (!switchToken || switchToken == "") {
           handleTokenSwitch();
       }
-  }, []);
+  }, [organizationId, isSignedIn]);
 
   useEffect(() => {
     if (!switchToken || !refreshToken || !expiresIn) return;
@@ -91,7 +92,6 @@ const ContextSwitch = ({ organizationId, children, fallback = null, scopes = "op
 
     if (!isSignedIn) {
       return <>
-      <h1>aaaaaaa</h1>
       {fallback}
       </>;
     }
@@ -100,7 +100,6 @@ const ContextSwitch = ({ organizationId, children, fallback = null, scopes = "op
       return <div>Loading...</div>;
     }
 
-    // return <>{children}</>;
     return (
     <SwitchTokenContext.Provider value={switchToken}>
       {children}

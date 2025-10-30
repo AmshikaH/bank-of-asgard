@@ -155,9 +155,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
   /business-update:
-    post:
+    patch:
       summary: Update business details
       description: Updates details of the business
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BusinessUpdateRequest'
       responses:
         '200':
           description: Successful business detail update
@@ -324,6 +330,22 @@ components:
     BusinessResponse:
       type: object
       properties:
+        businessRegistrationNumber:
+          type: string
+          example: 1234v
+    BusinessUpdateRequest:
+      type: object
+      required:
+        - organizationId
+        - operation
+        - businessRegistrationNumber
+      properties:
+        organizationId:
+          type: string
+          example: 0ade4ec0-a372-513a-bdcc-2e1fc35bd61e
+        operation:
+          type: string
+          example: ADD
         businessRegistrationNumber:
           type: string
           example: 1234v

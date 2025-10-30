@@ -20,7 +20,7 @@ import { useEffect } from "react";
 import PropTypes from "prop-types";
 import { SITE_SECTIONS } from "../../constants/app-constants";
 
-const BusinessMemberContent = ({ setSiteSection }) => {
+const BusinessMemberContent = ({ setSiteSection, role }) => {
 
   useEffect(() => {
     setSiteSection(SITE_SECTIONS.BUSINESS);
@@ -34,7 +34,7 @@ const BusinessMemberContent = ({ setSiteSection }) => {
             <div className="col-md-12 px-0">
               <div className="detail-box">
                 <div className="heading_container ">
-                  <h2>Business Member Account</h2>
+                  <h2>Business {role} Account</h2>
                 </div>
                 <p>
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -59,6 +59,7 @@ const BusinessMemberContent = ({ setSiteSection }) => {
 
 BusinessMemberContent.propTypes = {
   setSiteSection: PropTypes.object.isRequired,
+  role: PropTypes.string.isRequired
 };
 
 export default BusinessMemberContent;
