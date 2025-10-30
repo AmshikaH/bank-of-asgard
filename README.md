@@ -37,15 +37,15 @@
       ```
       internal_org_user_mgt_view internal_org_role_mgt_delete internal_org_role_mgt_create internal_org_role_mgt_update internal_org_role_mgt_view
       ```
-8. Create a standard web application.
-9. Navigate to the "Shared Access" tab and share the application with all organizations.
-10. Enable the following grant types:
+9. Create a standard web application.
+10. Navigate to the "Shared Access" tab and share the application with all organizations.
+11. Enable the following grant types:
   `Code`, `Client Credentials`, `Organization Switch`
   Note that the organization switch grant type is available only after shared access is enabled.
-11. Add the Authorized redirect URLs and allowed origins:
+12. Add the Authorized redirect URLs and allowed origins:
 redirect url: `https://localhost:5003`, allowed origin: `https://localhost:5003 http://localhost:5173`
 
-12. Enable API Authorization access for the following API resources:
+13. Enable API Authorization access for the following API resources:
   - Management APIs: 
     - SCIM2 Users API with the scopes:
       ```
@@ -65,15 +65,15 @@ redirect url: `https://localhost:5003`, allowed origin: `https://localhost:5003 
       internal_org_user_mgt_view internal_org_role_mgt_delete internal_org_role_mgt_create internal_org_role_mgt_update internal_org_role_mgt_view
       ```
 
-13. Navigate to the User Management -> Roles tab and create an organization role named `Business Administrator` with the permissions for the SCIM2 Users and SCIM2 Roles organization APIs. Also, create organization roles `Manager`, `Auditor` and `Member`.
-14. Navigate to Connections -> Passkey Setup -> Add the Trusted Origins: `http://localhost:5173` and enable `Allow Passkey usernameless authentication` option.
+14. Navigate to the User Management -> Roles tab and create an organization role named `Business Administrator` with the permissions for the SCIM2 Users and SCIM2 Roles organization APIs. Also, create organization roles `Manager`, `Auditor` and `Member`.
+15. Navigate to Connections -> Passkey Setup -> Add the Trusted Origins: `http://localhost:5173` and enable `Allow Passkey usernameless authentication` option.
 
-15. Configure [Onfido identity verification](https://wso2.com/asgardeo/docs/guides/identity-verification/add-identity-verification-with-onfido/) for your organization.
+16. Configure [Onfido identity verification](https://wso2.com/asgardeo/docs/guides/identity-verification/add-identity-verification-with-onfido/) for your organization.
 
-16. Create a copy of `app/public/config.example.js` inside the `app/public/` folder. And name it as `config.js`. Update the [config values](docs/config-properties.md) accordingly.
-17. Navigate to `App_home/app` and run `npm i`.
-18. From within the `App_home/app` directory, execute `npm start` to run the application.
-19. Create a copy of `server/.env.example` inside the `server/` folder. And name it as `.env`. Update the according to the commented instructions.
-20. Navigate to `App_home/server` and run `npm i`.
-21. From within the `App_home/server` directory, execute `nodemon server.js` to run the server.
-22. Test the application from registration of a personal and corporate account types.
+17. Create a copy of `app/public/config.example.js` inside the `app/public/` folder. And name it as `config.js`. Update the [config values](docs/config-properties.md) accordingly.
+18. Navigate to `App_home/app` and run `npm i`.
+19. From within the `App_home/app` directory, execute `npm start` to run the application.
+20. Create a copy of `server/.env.example` inside the `server/` folder. And name it as `.env`. Update the according to the commented instructions.
+21. Navigate to `App_home/server` and run `npm i`.
+22. From within the `App_home/server` directory, execute `nodemon server.js` to run the server.
+23. Test the application from registration of a personal and corporate account types.
