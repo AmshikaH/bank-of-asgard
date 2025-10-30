@@ -165,9 +165,10 @@ const IDPList = () => {
   const fetchMFA = async () => {
     try {
       setLoadingMFA(true);
+      const applicationId = await getAppId();
       const response = await request({
         method: "GET",
-        url: `${environmentConfig.ASGARDEO_BASE_URL}/o/api/server/v1/applications/b1af46d8-af32-474c-8235-3a52f9e2d526/authenticators`,
+        url: `${environmentConfig.ASGARDEO_BASE_URL}/o/api/server/v1/applications/${applicationId}/authenticators`,
         headers: {
           Accept: "application/json",
         },
@@ -199,6 +200,7 @@ const IDPList = () => {
 
     try {
       const appData = await fetchAppConfig();
+      const applicationId = await getAppId();
       const existingSteps = appData.authenticationSequence.steps || [];
 
       const step1 = existingSteps.find(step => step.id === 1) || {
@@ -232,7 +234,7 @@ const IDPList = () => {
 
     const response = await request({
       method: "PATCH",
-      url: `${environmentConfig.ASGARDEO_BASE_URL}/o/api/server/v1/applications/b1af46d8-af32-474c-8235-3a52f9e2d526`,
+      url: `${environmentConfig.ASGARDEO_BASE_URL}/o/api/server/v1/applications/${applicationId}`,
       data: payload,
       headers: {
         Accept: "application/json",

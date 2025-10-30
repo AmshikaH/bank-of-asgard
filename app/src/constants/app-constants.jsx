@@ -37,7 +37,13 @@ export const SITE_SECTIONS = {
 export const ACCOUNT_TYPES = {
     PERSONAL: "Personal",
     BUSINESS: "Business",
-    BUSINESS_MEMBER: "BusinessMember"
+}
+
+export const ROLES = {
+    MEMBER: "Member",
+    MANAGER: "Manager",
+    AUDITOR: "Auditor",
+    BUSINESS_ADMINISTRATOR: "Business Administrator"
 }
 
 export const URL_QUERY_PARAMS = {

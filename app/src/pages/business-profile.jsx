@@ -21,7 +21,7 @@ import PropTypes from "prop-types";
 import { useAsgardeo, useOrganization, useUser } from "@asgardeo/react";
 import EditProfile from "../components/user-profile/edit-profile";
 import ViewProfile from "../components/user-profile/view-profile";
-import { ACCOUNT_TYPES, SITE_SECTIONS } from "../constants/app-constants";
+import { ACCOUNT_TYPES, ROLES, SITE_SECTIONS } from "../constants/app-constants";
 import { environmentConfig } from "../util/environment-util";
 import IdentityVerificationStatus from "../components/identity-verification/identity-verification-status";
 import { useContext } from "react";
@@ -70,7 +70,7 @@ const BusinessProfilePage = ({ setSiteSection }) => {
   };
 
   useEffect(() => {
-    if (!isSignedIn) {
+    if (!isSignedIn || !myOrganizations?.length || !flattenedProfile?.businessName) {
         return;
     }
     const businessOrg = myOrganizations.find(
@@ -80,7 +80,7 @@ const BusinessProfilePage = ({ setSiteSection }) => {
         return;
     }
     setOrganizationId(businessOrg.id);
-  }, []);
+  }, [isSignedIn, myOrganizations, flattenedProfile]);
 
   const getUserInfo = () => {
     request({
@@ -115,6 +115,7 @@ const BusinessProfilePage = ({ setSiteSection }) => {
           country: response.data["urn:scim:wso2:schema"].country || "",
           birthdate: response.data["urn:scim:wso2:schema"].dateOfBirth || "",
           picture: response.data.picture || "",
+          role: response.data.roles[0] || "N/A"
         });
       }
       return;
@@ -134,26 +135,22 @@ const BusinessProfilePage = ({ setSiteSection }) => {
       {isIdentityVerificationEnabled && <IdentityVerificationStatus />}
       <section className="about_section layout_padding">
         <div className="container-fluid">
-          {userInfo && userInfo.accountType === ACCOUNT_TYPES.BUSINESS_MEMBER ? (
-             <BusinessMemberContent setSiteSection={ setSiteSection }/>
+          {userInfo && userInfo.role === ROLES.BUSINESS_ADMINISTRATOR ? (
+            <BusinessMemberContent setSiteSection={ setSiteSection } role={userInfo.role}/>
           ) : (
             <>
-              {showEditForm && userInfo ? (
-                <EditProfile
-                    userInfo={userInfo}
-                    onUpdateSuccess={handleUpdateSuccess}
-                    onCancel={handleCancelEdit}
-                />
-              ) : (
-                <ViewProfile
-                userInfo={userInfo}
-                setShowEditForm={setShowEditForm}
-                />
-              )}
-            </>
-          )}
-
-          {userInfo && userInfo.accountType === ACCOUNT_TYPES.BUSINESS && (
+            {showEditForm && userInfo ? (
+              <EditProfile
+                  userInfo={userInfo}
+                  onUpdateSuccess={handleUpdateSuccess}
+                  onCancel={handleCancelEdit}
+              />
+            ) : (
+              <ViewProfile
+              userInfo={userInfo}
+              setShowEditForm={setShowEditForm}
+              />
+            )}
             <ContextSwitch organizationId={organizationId} scopes={scopes}>
               <div className="row" style={{ marginTop: "25px" }}>
                 <div className="col-md-7">
@@ -183,6 +180,7 @@ const BusinessProfilePage = ({ setSiteSection }) => {
                 </div>
               </div>
             </ContextSwitch>
+            </>
           )}
         </div>
       </section>

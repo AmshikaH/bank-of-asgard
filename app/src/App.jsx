@@ -39,11 +39,12 @@ import IdentityVerificationPage from "./pages/identity-verification";
 import { IdentityVerificationProvider } from "./context/identity-verification-provider";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import BusinessProfilePage from "./pages/business-profile";
+import { CircularProgress } from "@mui/material";
 
 const App = () => {
   const { isSignedIn } = useAsgardeo();
   const [ siteSection, setSiteSection ] = useState("");
-  const { profile} = useUser();
+  const { profile } = useUser();
 
   const TransferFundsPage = lazy(() => import("./pages/transfer-funds"));
   const TransferFundsVerifyPage = lazy(() => import("./pages/transfer-funds-verify"));
@@ -190,18 +191,17 @@ const App = () => {
         }
         {/* <Route path="/" element={ <Navigate to={ ROUTES.PERSONAL_BANKING } setSiteSection={ setSiteSection } /> } /> */}
         <Route path="/" element={
-          isSignedIn ?
-            (
-              <>
-              {profile && profile["urn:scim:schemas:extension:custom:User"].accountType === ACCOUNT_TYPES.BUSINESS ? (
-                <BusinessProfilePage setSiteSection={ setSiteSection } />
-              ) : (
-                <UserProfilePage setSiteSection={ setSiteSection } />
-              )}
-             </>
+          isSignedIn ? (
+            !profile ? (
+              <CircularProgress />
+            ) : profile["urn:scim:schemas:extension:custom:User"].accountType === ACCOUNT_TYPES.BUSINESS ? (
+              <BusinessProfilePage setSiteSection={ setSiteSection } />
             ) : (
-              <PersonalBankingPage setSiteSection={ setSiteSection } />
+              <UserProfilePage setSiteSection={ setSiteSection } />
             )
+          ) : (
+            <PersonalBankingPage setSiteSection={ setSiteSection } />
+          )
         } />
         {
           isSignedIn &&

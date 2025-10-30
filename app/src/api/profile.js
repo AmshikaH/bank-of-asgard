@@ -25,8 +25,10 @@ export const closeAccount = (token) => {
   })
 };
 
-export const closeBusinessAccount = (businessName) => {
-  return axiosClient.delete(`/close-business-account?businessName=${businessName}`);
+export const closeBusinessAccount = (businessName, token) => {
+  return axiosClient.delete(`/close-business-account?businessName=${businessName}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
 };
 
 export const resetPassword = (username, currentPassword, newPassword) => {
